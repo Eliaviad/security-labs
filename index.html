@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web Security Labs</title>
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+<body>
+  <header class="site">
+    <div class="wrap">
+      <div class="hero-kicker">SECURITY RESEARCH LABS</div>
+      <h1>Learn to investigate, not guess<span class="logo-dot"> ▮</span></h1>
+      <p>Map the attack surface, form a hypothesis, prove impact in a safe lab, then patch and regression-test the flaw.</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="continue-panel" id="continue-panel" aria-label="Recommended next lab"></section>
+    <div class="catalog-toolbar">
+      <div>
+        <div class="section-eyebrow">LEARNING PATHS</div>
+        <h2>Choose a research path</h2>
+      </div>
+      <label class="mode-switch"><input type="checkbox" id="challenge-mode" /> Hide vulnerability labels</label>
+    </div>
+    <div class="path-grid" id="path-grid"></div>
+    <div class="catalog-toolbar lab-catalog-title">
+      <div>
+        <div class="section-eyebrow">LAB CATALOG</div>
+        <h2>Practice by evidence</h2>
+      </div>
+      <div class="mastery-summary" id="mastery-summary"></div>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <script src="assets/curriculum.js"></script>
+  <script src="assets/core.js"></script>
+  <script src="labs/manifest.js"></script>
+  <script src="assets/app.js"></script>
+</body>
+</html>

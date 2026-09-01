@@ -1,0 +1,41 @@
+/* ============================================================
+   manifest.js — SINGLE SOURCE OF TRUTH for which labs exist.
+   To add a lab: create labs/NN-slug/lab.js, then add its path
+   below. Nothing else needs to change.
+   ============================================================ */
+window.LAB_FILES = [
+  "labs/01-reflected-xss/lab.js",
+  "labs/02-client-secret/lab.js",
+  "labs/03-regex-validation-bypass/lab.js",
+  "labs/04-path-traversal/lab.js",
+  "labs/05-nosql-injection/lab.js",
+  "labs/06-command-injection/lab.js",
+  "labs/07-jwt-alg-none/lab.js",
+  "labs/08-mass-assignment/lab.js",
+  "labs/09-race-condition/lab.js",
+  "labs/10-prototype-pollution/lab.js",
+  "labs/11-ssrf-allowlist-bypass/lab.js",
+  "labs/12-redos/lab.js",
+  "labs/13-sql-injection/lab.js",
+  "labs/14-parameterized-safe/lab.js",
+  "labs/15-open-redirect/lab.js",
+  "labs/16-ssrf-ip-blocklist/lab.js",
+  "labs/17-idor-ownership/lab.js",
+  "labs/18-jwt-verify-safe/lab.js",
+  "labs/19-middleware-ordering/lab.js",
+  "labs/20-argument-injection/lab.js",
+  "labs/21-zip-slip/lab.js",
+  "labs/22-cors-reflect/lab.js",
+  "labs/23-negative-quantity/lab.js",
+  "labs/24-jwt-kid-traversal/lab.js",
+  "labs/25-stored-xss/lab.js",
+  "labs/26-reset-poisoning/lab.js",
+  "labs/27-live-bola/lab.js",
+  "labs/28-mime-upload/lab.js",
+  "labs/29-live-ssrf/lab.js",
+  "labs/30-live-ssti/lab.js",
+  "labs/31-oauth-linking/lab.js",
+  "labs/32-excessive-data/lab.js",
+  "labs/33-live-race/lab.js",
+  "labs/34-safe-ownership/lab.js"
+];
