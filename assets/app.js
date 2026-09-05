@@ -122,7 +122,8 @@ function renderLabs() {
     var a = el("a", "card" + (complete ? " solved" : "") + (record.opened ? " started" : ""));
     a.href = "lab.html?id=" + encodeURIComponent(lab.id) + (STATE.challenge ? "&mode=challenge" : "");
     var pathInfo = pathById(lab.track);
-    var modeLabel = lab.mode === "http" ? "live HTTP" : (lab.mode === "exploit" ? "payload" : (lab.safe ? "secure review" : "code review"));
+    var modeLabel = lab.architecture ? (lab.safe ? "secure design review" : "design review") :
+      (lab.mode === "http" ? "live HTTP" : (lab.mode === "exploit" ? "payload" : (lab.safe ? "secure review" : "code review")));
     a.innerHTML =
       '<div class="card-topline"><span class="num">LAB ' + String(lab.order).padStart(2, "0") + '</span>' +
       '<span class="card-state ' + (complete ? "complete" : "") + '">' + progressLabel(lab, record) + '</span></div>' +
@@ -170,6 +171,22 @@ function renderContinue() {
       (record.opened ? "Continue lab →" : "Start lab →") + '</a>';
 }
 
+function renderCareerEntry() {
+  var host = document.getElementById("career-entry");
+  if (!host) return;
+  var jobLabs = window.LABS.filter(function (lab) { return lab.track === "our-next-job"; });
+  var architectureLabs = window.LABS.filter(function (lab) { return lab.track === "architecture-review"; });
+  var jobDone = jobLabs.filter(function (lab) { return window.LabProgress.isComplete(lab.id); }).length;
+  var architectureDone = architectureLabs.filter(function (lab) { return window.LabProgress.isComplete(lab.id); }).length;
+  host.innerHTML =
+    '<div><span class="section-eyebrow">CAREER MISSION</span><h2>Prepare for the next security role</h2>' +
+    '<p>Build with AI, investigate game-security failures, and defend architecture decisions under interview pressure.</p>' +
+    '<div class="career-stats"><span>' + jobDone + ' / ' + jobLabs.length + ' job labs</span><span>' + architectureDone + ' / ' + architectureLabs.length + ' design reviews</span></div></div>' +
+    '<div class="career-actions"><a class="btn primary" href="lab.html?id=35-authoritative-pricing">Start Our Next Job →</a>' +
+    '<a class="btn" href="lab.html?id=36-live-reward-replay">Open live reward lab</a>' +
+    '<a class="btn" href="lab.html?id=45-season-reward-pipeline">Start Architecture Reviews</a></div>';
+}
+
 window.addEventListener("DOMContentLoaded", function () {
   window.loadAllLabs(function () {
     STATE.challenge = window.LabProgress.getPreference("challengeMode") === true;
@@ -184,5 +201,6 @@ window.addEventListener("DOMContentLoaded", function () {
     buildFilters();
     renderPaths();
     renderLabs();
+    renderCareerEntry();
   });
 });

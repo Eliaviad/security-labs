@@ -61,7 +61,13 @@ function renderLab() {
   workspace.appendChild(buildHeader());
   workspace.appendChild(buildBrief());
 
-  workspace.appendChild(el("div", "section-title", "1 · Review the implementation"));
+  if (LAB.build) {
+    workspace.appendChild(el("div", "section-title", "0 · Build the functional slice with AI"));
+    workspace.appendChild(buildProjectPanel());
+  }
+
+  workspace.appendChild(el("div", "section-title", LAB.architecture ? "1 · Review the architecture" : "1 · Review the implementation"));
+  if (LAB.architecture) workspace.appendChild(buildArchitectureContext());
   workspace.appendChild(buildCodeViewer());
 
   var feedback = el("div", "feedback");
@@ -116,7 +122,7 @@ function buildHeader() {
       '<span class="tag diff-' + LAB.difficulty + '">' + LAB.difficulty + '</span>' +
       (challengeMode ? '' : '<span class="tag">' + escHtml(catLabel(LAB.category)) + '</span>') +
       '<span class="tag ' + (LAB.mode === "http" ? "mode-live" : (LAB.mode === "exploit" ? "mode-exploit" : "")) + '">' +
-        (LAB.mode === "http" ? "live HTTP" : (LAB.mode === "exploit" ? "payload runner" : (LAB.safe ? "secure review" : "code review"))) + '</span>' +
+        (LAB.architecture ? (LAB.safe ? "secure design review" : "design review") : (LAB.mode === "http" ? "live HTTP" : (LAB.mode === "exploit" ? "payload runner" : (LAB.safe ? "secure review" : "code review")))) + '</span>' +
       '<span class="tag">' + LAB.estimatedTime + ' min</span>' +
     '</div>' +
     '<p class="lab-desc">' + escHtml(challengeMode ? "Investigate the implementation. Do not assume the snippet is vulnerable." : LAB.description) + '</p>' +
@@ -133,11 +139,27 @@ function buildBrief() {
     ? "Review the code, save your hypothesis, then use the HTTP workbench to achieve the objective against the local lab server."
     : (LAB.mode === "exploit"
       ? "Review the code, save your hypothesis, then craft a payload that produces an observable security impact."
-      : "Review the code like a security researcher. Identify the vulnerable line(s), or justify that the snippet is secure.");
+      : (LAB.architecture
+        ? "Review the design like a security architect. Identify the risky design decision(s), or justify that the reviewed property is secure."
+        : "Review the code like a security researcher. Identify the vulnerable line(s), or justify that the snippet is secure."));
   task.innerHTML =
     '<div><span class="brief-label">OBJECTIVE</span><p>' + escHtml(modeText) + '</p></div>' +
     '<div><span class="brief-label">RESEARCH RULE</span><p>A pattern is not proof. State the trust boundary, prerequisites and expected observation.</p></div>';
   return task;
+}
+
+function buildArchitectureContext() {
+  var architecture = LAB.architecture;
+  var assets = (architecture.assets || []).map(function (item) { return "<li>" + escHtml(item) + "</li>"; }).join("");
+  var constraints = (architecture.constraints || []).map(function (item) { return "<li>" + escHtml(item) + "</li>"; }).join("");
+  var questions = (architecture.questions || []).map(function (item) { return "<li>" + escHtml(item) + "</li>"; }).join("");
+  var box = el("section", "architecture-context");
+  box.innerHTML =
+    '<div class="architecture-summary"><span class="brief-label">SYSTEM CONTEXT</span><p>' + escHtml(architecture.context) + '</p></div>' +
+    '<div class="architecture-columns"><div><h3>Assets</h3><ul>' + assets + '</ul></div>' +
+    '<div><h3>Constraints</h3><ul>' + constraints + '</ul></div>' +
+    '<div><h3>Review questions</h3><ul>' + questions + '</ul></div></div>';
+  return box;
 }
 
 function buildStageRail() {
@@ -150,11 +172,70 @@ function buildStageRail() {
     ["04", "Fix", record.remediated],
     ["05", "Test", record.regressionPassed]
   ];
+  if (LAB.build) items.unshift(["00", "Build", record.buildCompleted]);
   var aside = el("aside", "stage-rail");
   aside.innerHTML = '<a class="rail-brand" href="index.html">SRL<span>▮</span></a>' + items.map(function (item) {
     return '<div class="rail-step ' + (item[2] ? 'done' : '') + '"><span>' + item[0] + '</span><b>' + item[1] + '</b></div>';
   }).join('');
   return aside;
+}
+
+function buildProjectPanel() {
+  var saved = loadReasoning();
+  var build = LAB.build;
+  var box = el("section", "build-panel");
+  var requirements = (build.requirements || []).map(function (item) {
+    return "<li>" + escHtml(item) + "</li>";
+  }).join("");
+  var acceptance = (build.acceptance || []).map(function (item) {
+    return "<li>" + escHtml(item) + "</li>";
+  }).join("");
+  box.innerHTML =
+    '<div class="build-grid"><div><span class="brief-label">SCENARIO</span><p>' + escHtml(build.scenario) + '</p>' +
+    '<h3>Functional requirements</h3><ul>' + requirements + '</ul></div>' +
+    '<div><span class="brief-label">ACCEPTANCE</span><ul>' + acceptance + '</ul></div></div>' +
+    '<label class="build-notes"><span>What did the AI build, and what did you verify yourself?</span>' +
+    '<textarea id="build-notes" placeholder="Record files created, request flow, tests run, and anything you changed manually."></textarea></label>';
+  box.querySelector("#build-notes").value = saved.buildNotes || "";
+
+  var actions = el("div", "actions");
+  var copy = el("button", "btn", "Copy Claude Code build prompt");
+  copy.type = "button";
+  copy.onclick = function () {
+    var note = document.getElementById("build-note");
+    function ok() { note.className = "feedback ok"; note.textContent = "✓ Build prompt copied."; }
+    function fail() { note.className = "feedback no"; note.textContent = "Clipboard access failed; copy the prompt from the revealed solution notes."; }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(build.prompt).then(ok, fail);
+    else if (legacyCopy(build.prompt)) ok(); else fail();
+  };
+  var done = el("button", "btn primary", "Save build evidence");
+  done.type = "button";
+  done.onclick = saveBuildEvidence;
+  actions.appendChild(copy);
+  actions.appendChild(done);
+  box.appendChild(actions);
+  var note = el("div", "feedback");
+  note.id = "build-note";
+  note.setAttribute("role", "status");
+  box.appendChild(note);
+  return box;
+}
+
+function saveBuildEvidence() {
+  var value = document.getElementById("build-notes").value.trim();
+  var saved = loadReasoning();
+  saved.buildNotes = value;
+  saveReasoningData(saved);
+  var note = document.getElementById("build-note");
+  if (value.length < 40) {
+    note.className = "feedback no";
+    note.textContent = "Saved locally. Add concrete files, behavior and tests you personally verified.";
+    return;
+  }
+  window.LabProgress.markBuilt(LAB.id);
+  note.className = "feedback ok";
+  note.textContent = "✓ Build evidence saved. Continue by reviewing the implementation without asking AI for the answer.";
+  refreshRail();
 }
 
 function buildReviewActions() {

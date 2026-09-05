@@ -8,7 +8,7 @@ An evidence-driven web security learning platform for practicing the full resear
 4. propose a class-level remediation;
 5. define positive and negative regression tests.
 
-The project contains **34 labs** across seven learning paths. It mixes code review, deterministic in-browser payload runners, and isolated live HTTP targets. Revealing an answer never grants mastery, and a successful HTTP status alone never counts as an exploit.
+The project contains **53 labs** across nine learning paths. It mixes AI-assisted build briefs, code and architecture review, deterministic in-browser payload runners, and isolated live HTTP targets. Revealing an answer never grants mastery, and a successful HTTP status alone never counts as an exploit.
 
 ## Quick start
 
@@ -40,6 +40,10 @@ The suite validates lab schemas and answer lines, mastery semantics, browser-eng
 - **Browser Exploitation** — reflected/stored XSS, CORS and redirects.
 - **Business Logic & Concurrency** — economic invariants, ReDoS and atomicity.
 - **Advanced Web Research** — preconditions, parser behavior, chained impact and secure-review challenges.
+- **Our Next Job** — AI-assisted AppSec ownership for mobile-game economy, architecture, agent security and delivery workflows.
+- **Architecture & Design Review** — distributed systems, trust boundaries, control planes, multi-tenancy and secure failure design.
+
+The ten career-track labs add a Build stage before the normal research loop. Each supplies a bounded functional brief, acceptance criteria and a Claude Code prompt. The learner records what the AI produced and what they personally verified before moving to vulnerability analysis.
 
 Challenge mode hides vulnerability labels and uses neutral titles, so the catalog does not reveal the answer before the investigation begins.
 
@@ -47,9 +51,9 @@ Challenge mode hides vulnerability labels and uses neutral titles, so the catalo
 
 | Mode | Count | Completion evidence |
 |---|---:|---|
-| Static code review | 16 | Correct vulnerable lines, or a justified secure verdict |
-| Payload runner | 8 | Correct identification plus deterministic impact proof |
-| Live HTTP | 10 | Correct identification plus a server-issued evidence receipt |
+| Static code/design review | 32 | Correct risky decisions, or a justified secure verdict |
+| Payload runner | 9 | Correct identification plus deterministic impact proof |
+| Live HTTP | 12 | Correct identification plus a server-issued evidence receipt |
 
 ### Live HTTP labs
 
@@ -65,6 +69,39 @@ Challenge mode hides vulnerability labels and uses neutral titles, so the catalo
 | 32 | Excessive data exposure | Observe unnecessary sensitive fields in the raw API response |
 | 33 | Coupon race condition | Use a real concurrent burst to redeem one coupon more than once |
 | 34 | Secure ownership lookup | Prove own access works while another owner's real object stays denied |
+| 36 | Daily reward replay | Credit one player's wallet twice with the same reward claim |
+| 37 | Wallet double-spend | Violate currency conservation using concurrent transfers |
+
+### Our Next Job career track
+
+| # | Lab | Interview signal |
+|---:|---|---|
+| 35 | Store checkout | Server-authoritative price and economic invariants |
+| 36 | Daily reward | Replay resistance and idempotency |
+| 37 | Wallet transfer | Concurrency, atomicity and double-entry thinking |
+| 38 | Purchase verification | Receipt replay and account binding |
+| 39 | Score submission | Mobile-client trust and anti-abuse design |
+| 40 | Economy architecture | Trust boundaries, blast radius and event consistency |
+| 41 | RAG reviewer | Indirect prompt injection and data provenance |
+| 42 | Support automation | Agent tool authorization and confused-deputy risk |
+| 43 | Tool gateway | Secure-review judgment and scoped capabilities |
+| 44 | Security workflow | Reliable automation and fail-open behavior |
+
+### Architecture & Design Review track
+
+These labs present system context, protected assets, real product constraints and review questions before the numbered design. The goal is to identify the smallest set of architectural decisions that violate a business invariant, propose practical controls, and define failure-injection or abuse-case tests.
+
+| # | Design | Core decision |
+|---:|---|---|
+| 45 | Season rewards | Exactly-once effect over at-least-once delivery |
+| 46 | Guild treasury | Tenant scope through policy, cache and storage |
+| 47 | Payment webhooks | Authenticity, replay and event ordering |
+| 48 | Remote configuration | Publishing trust, signing and server authority |
+| 49 | Support control plane | Scoped privilege, approvals and blast radius |
+| 50 | Multi-region wallet | Consistency versus partition-time availability |
+| 51 | Multi-tenant RAG | Pre-retrieval authorization and data lifecycle |
+| 52 | Agentic incident response | Bounded autonomy and human control |
+| 53 | Secure economy ledger | Evidence-based secure-design review |
 
 Each live workspace includes editable method, path, headers and body fields; request templates provide benign controls rather than grading based on a copied magic answer.
 
@@ -112,6 +149,7 @@ Every lab should include:
 - a negative control that must not complete the objective;
 - for `http` mode, same-origin base/status/reset paths and editable request templates;
 - `safe: true` with no vulnerable lines when the correct verdict is secure.
+- career-track labs should include a structured `build` brief with a scenario, requirements, acceptance criteria and a bounded AI prompt.
 
 After each coherent change, run the relevant targeted check and then `npm run qa` before publishing.
 

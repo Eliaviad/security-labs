@@ -260,6 +260,68 @@ export const liveLabs = {
       }
       return ctx.json(200, invoice);
     }
+  },
+
+  "36-live-reward-replay": {
+    createState() {
+      return {
+        rewards: { "daily-2026-09-05": 100 },
+        balances: { alice: 0, bob: 0 },
+        claims: [],
+        success: false,
+        evidence: ""
+      };
+    },
+    async handle(ctx) {
+      if (!route(ctx.method, ctx.subpath, "POST", /^\/claim$/)) {
+        return ctx.json(404, { error: "unknown reward route" });
+      }
+      const user = String(ctx.headers["x-lab-user"] || "");
+      if (!Object.hasOwn(ctx.state.balances, user)) {
+        return ctx.json(401, { error: "use a valid X-Lab-User" });
+      }
+      const input = await ctx.readJson();
+      const amount = ctx.state.rewards[input.rewardId];
+      if (!amount) return ctx.json(404, { error: "unknown reward" });
+      ctx.state.balances[user] += amount;
+      ctx.state.claims.push({ playerId: user, rewardId: input.rewardId });
+      const duplicates = ctx.state.claims.filter((claim) => claim.playerId === user && claim.rewardId === input.rewardId).length;
+      if (duplicates > 1) {
+        ctx.state.success = true;
+        ctx.state.evidence = `${user} claimed ${input.rewardId} ${duplicates} times and reached ${ctx.state.balances[user]} credits`;
+      }
+      return ctx.json(200, { credited: amount, balance: ctx.state.balances[user], claimCount: duplicates });
+    }
+  },
+
+  "37-live-wallet-race": {
+    createState() {
+      return { balances: { alice: 100, bob: 0 }, transfers: [], success: false, evidence: "" };
+    },
+    async handle(ctx) {
+      if (!route(ctx.method, ctx.subpath, "POST", /^\/transfer$/)) {
+        return ctx.json(404, { error: "unknown wallet route" });
+      }
+      const from = String(ctx.headers["x-lab-user"] || "");
+      const input = await ctx.readJson();
+      const to = String(input.to || "");
+      const amount = input.amount;
+      if (!Object.hasOwn(ctx.state.balances, from)) return ctx.json(401, { error: "valid X-Lab-User required" });
+      if (!Object.hasOwn(ctx.state.balances, to) || to === from) return ctx.json(400, { error: "invalid destination" });
+      if (!Number.isInteger(amount) || amount < 1 || amount > 100) return ctx.json(400, { error: "amount must be 1..100" });
+      const observedBalance = ctx.state.balances[from];
+      if (observedBalance < amount) return ctx.json(409, { error: "insufficient", balances: ctx.state.balances });
+      await ctx.delay(45);
+      ctx.state.balances[from] = observedBalance - amount;
+      ctx.state.balances[to] += amount;
+      ctx.state.transfers.push({ from, to, amount });
+      const total = Object.values(ctx.state.balances).reduce((sum, value) => sum + value, 0);
+      if (total > 100) {
+        ctx.state.success = true;
+        ctx.state.evidence = `concurrent stale writes created ${total - 100} credits; balances total ${total}`;
+      }
+      return ctx.json(200, { transferred: amount, balances: ctx.state.balances, total });
+    }
   }
 };
 

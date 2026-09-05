@@ -56,6 +56,7 @@ var Progress = (function () {
   function freshRecord() {
     return {
       opened: false,
+      buildCompleted: false,
       hypothesisSubmitted: false,
       identified: false,
       exploited: false,
@@ -126,6 +127,7 @@ var Progress = (function () {
     get: function (id) { return Object.assign({}, get(id)); },
     update: update,
     markOpened: function (id) { return update(id, { opened: true }); },
+    markBuilt: function (id) { return update(id, { buildCompleted: true }); },
     markHypothesis: function (id) { return update(id, { hypothesisSubmitted: true }); },
     markIdentified: function (id) { return update(id, { identified: true }); },
     markExploited: function (id) { return update(id, { exploited: true }); },

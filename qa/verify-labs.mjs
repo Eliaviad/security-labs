@@ -101,6 +101,29 @@ for (const lab of labs) {
       }
     }
   }
+
+  if (lab.track === 'our-next-job') {
+    assert(lab.build && typeof lab.build === 'object', `${label}: career-track build brief required`);
+    assert(typeof lab.build.scenario === 'string' && lab.build.scenario.length >= 40,
+      `${label}: build scenario is too shallow`);
+    assert(Array.isArray(lab.build.requirements) && lab.build.requirements.length >= 3,
+      `${label}: at least three build requirements required`);
+    assert(Array.isArray(lab.build.acceptance) && lab.build.acceptance.length >= 3,
+      `${label}: at least three acceptance criteria required`);
+    assert(typeof lab.build.prompt === 'string' && lab.build.prompt.length >= 100,
+      `${label}: actionable AI build prompt required`);
+  }
+
+  if (lab.track === 'architecture-review') {
+    assert(lab.mode === 'static', `${label}: architecture reviews must use static evidence mode`);
+    assert(lab.architecture && typeof lab.architecture === 'object', `${label}: architecture context required`);
+    assert(typeof lab.architecture.context === 'string' && lab.architecture.context.length >= 80,
+      `${label}: system context is too shallow`);
+    for (const field of ['assets', 'constraints', 'questions']) {
+      assert(Array.isArray(lab.architecture[field]) && lab.architecture[field].length >= 3,
+        `${label}: architecture.${field} needs at least three entries`);
+    }
+  }
 }
 
 const diskLabs = fs.readdirSync(path.join(root, 'labs'), { withFileTypes: true })

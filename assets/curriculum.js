@@ -56,6 +56,22 @@ window.SECURITY_PATHS = [
     eyebrow: "PATH 07",
     description: "Parser differentials, chained flaws, patch review, CVE reconstruction and mystery labs.",
     color: "gold"
+  },
+  {
+    id: "our-next-job",
+    order: 8,
+    title: "Our Next Job",
+    eyebrow: "CAREER TRACK",
+    description: "AI-assisted AppSec ownership for a high-scale mobile-game backend: build, break, fix and defend.",
+    color: "purple"
+  },
+  {
+    id: "architecture-review",
+    order: 9,
+    title: "Architecture & Design Review",
+    eyebrow: "SYSTEM THINKING",
+    description: "Find security failures in distributed systems, trust boundaries and privileged workflows before code exists.",
+    color: "gold"
   }
 ];
 
@@ -93,5 +109,24 @@ window.LAB_CURRICULUM = {
   "31-oauth-linking": { track: "web-advanced", mysteryTitle: "Connect an external identity", skills: ["oauth", "state-binding", "account-linking"], estimatedTime: 45 },
   "32-excessive-data": { track: "web-foundations", mysteryTitle: "Profile bootstrap API", skills: ["api-response", "data-minimization", "schema-review"], estimatedTime: 15 },
   "33-live-race": { track: "web-logic", mysteryTitle: "Single-use coupon", skills: ["concurrency", "atomicity", "burst-testing"], estimatedTime: 35 },
-  "34-safe-ownership": { track: "web-auth", mysteryTitle: "Invoice API review II", skills: ["secure-review", "authorization-tests", "anti-false-positive"], estimatedTime: 20 }
+  "34-safe-ownership": { track: "web-auth", mysteryTitle: "Invoice API review II", skills: ["secure-review", "authorization-tests", "anti-false-positive"], estimatedTime: 20 },
+  "35-authoritative-pricing": { track: "our-next-job", mysteryTitle: "Store checkout", skills: ["server-authority", "economy-invariant", "code-review"], estimatedTime: 35 },
+  "36-live-reward-replay": { track: "our-next-job", mysteryTitle: "Daily reward", skills: ["replay", "idempotency", "state-transition"], estimatedTime: 45 },
+  "37-live-wallet-race": { track: "our-next-job", mysteryTitle: "Wallet transfer", skills: ["concurrency", "double-spend", "atomicity"], estimatedTime: 50 },
+  "38-receipt-binding": { track: "our-next-job", mysteryTitle: "Purchase verification", skills: ["receipt-binding", "entitlements", "server-validation"], estimatedTime: 40 },
+  "39-leaderboard-trust": { track: "our-next-job", mysteryTitle: "Score submission", skills: ["client-trust", "abuse-case", "telemetry"], estimatedTime: 35 },
+  "40-economy-architecture": { track: "our-next-job", mysteryTitle: "Economy service design", skills: ["threat-model", "trust-boundary", "blast-radius"], estimatedTime: 50 },
+  "41-rag-instruction-injection": { track: "our-next-job", mysteryTitle: "Knowledge-assisted reviewer", skills: ["rag", "prompt-injection", "data-provenance"], estimatedTime: 45 },
+  "42-agent-confused-deputy": { track: "our-next-job", mysteryTitle: "Support automation", skills: ["agent-tools", "authorization", "least-privilege"], estimatedTime: 45 },
+  "43-secure-agent-gateway": { track: "our-next-job", mysteryTitle: "Tool gateway review", skills: ["secure-review", "capability-design", "human-approval"], estimatedTime: 35 },
+  "44-pipeline-fail-open": { track: "our-next-job", mysteryTitle: "Security review workflow", skills: ["automation", "fail-open", "delivery"], estimatedTime: 40 },
+  "45-season-reward-pipeline": { track: "architecture-review", mysteryTitle: "Season rewards", skills: ["event-driven", "idempotency", "reconciliation"], estimatedTime: 45 },
+  "46-guild-treasury": { track: "architecture-review", mysteryTitle: "Guild treasury", skills: ["tenant-isolation", "authorization", "cache-boundary"], estimatedTime: 50 },
+  "47-payment-webhook": { track: "architecture-review", mysteryTitle: "Purchase events", skills: ["webhook-trust", "replay", "ordering"], estimatedTime: 45 },
+  "48-remote-config": { track: "architecture-review", mysteryTitle: "Live configuration", skills: ["supply-chain", "signing", "rollback"], estimatedTime: 45 },
+  "49-admin-control-plane": { track: "architecture-review", mysteryTitle: "Player support console", skills: ["control-plane", "blast-radius", "approvals"], estimatedTime: 50 },
+  "50-multi-region-wallet": { track: "architecture-review", mysteryTitle: "Global wallet", skills: ["distributed-state", "consistency", "double-spend"], estimatedTime: 55 },
+  "51-multitenant-rag": { track: "architecture-review", mysteryTitle: "Internal knowledge assistant", skills: ["rag", "tenant-isolation", "data-leakage"], estimatedTime: 50 },
+  "52-agentic-incident-response": { track: "architecture-review", mysteryTitle: "Automated containment", skills: ["agent-security", "incident-response", "human-control"], estimatedTime: 55 },
+  "53-secure-ledger-design": { track: "architecture-review", mysteryTitle: "Economy ledger review", skills: ["secure-design", "auditability", "anti-false-positive"], estimatedTime: 45 }
 };

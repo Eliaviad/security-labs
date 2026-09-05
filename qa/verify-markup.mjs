@@ -12,6 +12,8 @@ for (const file of ['index.html', 'lab.html']) {
     `${file}: curriculum metadata must load before core normalization`);
   assert.match(html, /<meta name="viewport"/, `${file}: responsive viewport required`);
 }
+assert.match(fs.readFileSync(path.join(root, 'index.html'), 'utf8'), /id="career-entry"/,
+  'home page needs a direct career-track entry point');
 
 const css = fs.readFileSync(path.join(root, 'assets', 'styles.css'), 'utf8');
 const stripped = css.replace(/\/\*[\s\S]*?\*\//g, '');
@@ -21,5 +23,7 @@ assert(css.includes('@media (max-width: 600px)') || css.includes('@media (max-wi
   'mobile breakpoint required');
 assert(css.includes('.lab-shell') && css.includes('.path-grid'),
   'catalog and lab workspace styles required');
+assert(css.includes('.career-entry') && css.includes('.architecture-context'),
+  'career entry and architecture review styles required');
 
 console.log('QA PASS: markup, script ordering and responsive CSS validated');

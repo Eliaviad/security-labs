@@ -137,10 +137,35 @@ try {
   assert.equal((await client.request('/lab-api/34-safe-ownership/invoices/inv-200', { headers: { 'X-Lab-User': 'alice' } })).status, 404);
   assert.equal((await status(client, '34-safe-ownership')).success, true, 'secure lab requires positive and negative authorization evidence');
 
+  await reset(client, '36-live-reward-replay');
+  const firstReward = await jsonRequest(client, '/lab-api/36-live-reward-replay/claim', 'POST',
+    { rewardId: 'daily-2026-09-05' }, { 'X-Lab-User': 'alice' });
+  assert.equal(firstReward.status, 200);
+  assert.equal(firstReward.json.balance, 100);
+  assert.equal((await status(client, '36-live-reward-replay')).success, false, 'first legitimate reward claim is a control');
+  const replayedReward = await jsonRequest(client, '/lab-api/36-live-reward-replay/claim', 'POST',
+    { rewardId: 'daily-2026-09-05' }, { 'X-Lab-User': 'alice' });
+  assert.equal(replayedReward.json.balance, 200);
+  assert.equal((await status(client, '36-live-reward-replay')).success, true, 'sequential duplicate must prove reward replay');
+
+  await reset(client, '37-live-wallet-race');
+  const normalTransfer = await jsonRequest(client, '/lab-api/37-live-wallet-race/transfer', 'POST',
+    { to: 'bob', amount: 10 }, { 'X-Lab-User': 'alice' });
+  assert.equal(normalTransfer.status, 200);
+  assert.equal(normalTransfer.json.total, 100, 'one transfer must conserve currency');
+  assert.equal((await status(client, '37-live-wallet-race')).success, false, 'sequential transfer is a control');
+  await reset(client, '37-live-wallet-race');
+  const transfers = await Promise.all(Array.from({ length: 3 }, () =>
+    jsonRequest(client, '/lab-api/37-live-wallet-race/transfer', 'POST',
+      { to: 'bob', amount: 40 }, { 'X-Lab-User': 'alice' })
+  ));
+  assert.equal(transfers.filter((result) => result.status === 200).length, 3);
+  assert.equal((await status(client, '37-live-wallet-race')).success, true, 'concurrent transfers must prove currency creation');
+
   const isolatedClient = createClient();
   assert.equal((await status(isolatedClient, '27-live-bola')).success, false, 'lab state must be isolated between sessions');
 
-  console.log('QA PASS: 10 live labs executed through isolated HTTP sessions');
+  console.log('QA PASS: 12 live labs executed through isolated HTTP sessions');
   console.log('Security controls: body limit, method guards, traversal containment, CSP sandbox, session isolation');
 } finally {
   server.close();
